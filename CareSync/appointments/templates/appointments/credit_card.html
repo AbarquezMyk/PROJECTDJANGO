@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareSync - Payment Settings</title>
+    <link rel="icon" href="{% static 'img/favicons/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            width: 60%;
+            max-width: 800px;
+        }
+        h1, h2 {
+            color: #343a40;
+            font-weight: 700;
+        }
+        .payment-cards-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .payment-card {
+            flex: 0 0 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            background: linear-gradient(135deg, #6c757d, #495057);
+            border-radius: 15px;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .payment-card img {
+            width: 50px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .payment-card-details {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #e9ecef;
+        }
+        .payment-card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .payment-card-actions button {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body style="font-family: 'Manjari', sans-serif; display: flex; margin: 0; padding: 0; height: 100vh;">
+    <!-- Sidebar -->
+    <div style="width: 250px; background-color: white; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #CED4DA; height: 100vh;">
+        <div style="text-align: center;">
+            <img src="{% static 'img/gallery/logo.png' %}" alt="CareSync Logo" style="width: 200px; height: auto; margin-top: -50px;">
+        </div>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/dashboard.png' %}" alt="Dashboard Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Dashboard</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/appointment-icon.png' %}" alt="Appointments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:appointment_history' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Appointments</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/calendar-icon.png' %}" alt="Calendar Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:calendar' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Calendar</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/payment-method.png' %}" alt="Payments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:credit_card' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Payments</a>
+            </li>
+            <!-- <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/setting.png' %}" alt="Settings Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="#" style="text-decoration: none; color: #023350; font-size: 18px;">Settings</a>
+            </li> -->
+        </ul>
+        <div style="text-align: center; margin-top: auto;">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="color: red; background: none; border: none; text-decoration: none; cursor: pointer;">Log Out</button>
+            </form> 
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 style="text-align: center; font-size: 40px;">Payment Settings</h1>
+        <h2 class="mb-3" style="font-size: 30px;">Saved Cards</h2>
+        <p>Total Cards: {{ cards.count }}</p>
+        {% if cards %}
+        <div class="payment-cards-wrapper">
+            {% for card in cards %}
+            <div class="payment-card">
+                <div class="d-flex flex-column align-items-center">
+                    <div class="payment-card-details text-center">
+                        <p class="mb-1"><strong>{{ card.cardholder_name }}</strong></p>
+                        <p class="mb-1"><strong>**** **** **** {{ card.masked_card_number|slice:"-4:" }}</strong></p>
+                        <p class="mb-0">Expiry: {{ card.expiry_date }}</p>
+                    </div>
+                    <div class="payment-card-actions">
+                        <form method="GET" action="{% url 'appointments:edit_card' card.id %}" class="d-inline">
+                            <button type="submit" class="btn btn-light btn-sm">Edit</button>
+                        </form>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="showDeleteModal('{{ card.id }}')">Delete</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No saved cards.</p>
+        {% endif %}
+
+        <h2 class="mt-5" style="text-align: center; font-size: 30px;">{% if card_to_edit %}Edit Card{% else %}Add New Card{% endif %}</h2>
+        <form method="POST" action="{% if card_to_edit %}{% url 'appointments:edit_card' card_to_edit.id %}{% else %}{% url 'appointments:credit_card' %}{% endif %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_cardholder_name" class="form-label">Cardholder Name</label>
+                <input type="text" name="cardholder_name" id="id_cardholder_name" class="form-control" 
+                    value="{{ form.cardholder_name.value|default_if_none:'' }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_card_number" class="form-label">Card Number</label>
+                <input type="text" name="card_number" id="id_card_number" class="form-control" 
+                    value="{{ form.card_number.value|default_if_none:'' }}">
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="id_expiration_date" class="form-label">Expiration Date</label>
+                    <input type="month" name="expiration_date" id="id_expiration_date" class="form-control" 
+                        value="{{ form.expiration_date.value|default_if_none:'' }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="id_cvc" class="form-label">CVC</label>
+                    <input type="text" name="cvc" id="id_cvc" class="form-control" 
+                        value="{{ form.cvc.value|default_if_none:'' }}">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                {% if card_to_edit %}Save Changes{% else %}Add Card{% endif %}
+            </button>
+        </form>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this card?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showDeleteModal(cardId) {
+            const deleteUrl = "{% url 'appointments:delete_card' 0 %}".replace("0", cardId);
+            document.getElementById('deleteForm').action = deleteUrl;
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

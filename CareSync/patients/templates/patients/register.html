@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- ===============================================-->
+    <!--    Document Title-->
+    <!-- ===============================================-->
+    <title>CareSync - Register</title>
+
+    <!-- ===============================================-->
+    <!--    Favicons-->
+    <!-- ===============================================-->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicons/favicon.ico' %}">
+    <link rel="manifest" href="{% static 'img/favicons/manifest.json' %}">
+    <meta name="msapplication-TileImage" content="{% static 'img/favicons/mstile-150x150.png' %}">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- ===============================================-->
+    <!--    Fonts-->
+    <!-- ===============================================-->
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400&display=swap" rel="stylesheet">
+
+    <!-- ===============================================-->
+    <!--    Stylesheets-->
+    <!-- ===============================================-->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+
+    <style>
+        .register-section {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .register-section h2 {
+            margin-bottom: 20px;
+            color: #2d3e50;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .form-row input {
+            flex: 1;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #d9d9d9;
+            width: 100%;
+        }
+
+        input:focus {
+            border-color: #2d3e50;
+        }
+
+        button {
+            background-color: #2d3e50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            background-color: #1a2735;
+        }
+
+        .login-options {
+            margin-bottom: 20px;
+        }
+
+        .google-button {
+            background-color: #fff;
+            border: 1px solid #d9d9d9;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            color: black;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .google-button img {
+            margin-right: 10px;
+        }
+
+        .google-button:hover {
+            background-color: #f1f1f1;
+            border-color: #c0c0c0;
+        }
+
+        /* Updated styles for the checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: -20px;
+            margin-bottom: 5px;
+            margin-left: 5px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 15px;
+            margin-top: 19px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #2d3e50; /* Color for the checkbox */
+        }
+
+        .checkbox-container label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-container a {
+            color: #2d3e50;
+            text-decoration: underline;
+        }
+
+        .checkbox-container a:hover {
+            color: #1a2735;
+        }
+    </style>
+</head>
+
+<body>
+
+        <!-- ===============================================-->
+        <!--    Main Content-->
+        <!-- ===============================================-->
+        <main class="main" id="top">
+            <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 d-block" data-navbar-on-scroll="data-navbar-on-scroll">
+                <div class="container">
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                        <img src="{% static 'img/gallery/logo.png' %}" width="140" alt="logo" />
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"> </span>
+                    </button>
+                    <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">
+                        <a href="{% url 'login' %}" style="color: #2d3e50; margin-left: auto;">Already have an account? Log In</a>
+                    </div>
+                </div>
+            </nav>
+    
+            <section class="py-xxl-10 pb-0" id="home" style="margin-top: -100px;">
+                <div class="container">
+                    <div class="row min-vh-xl-100 min-vh-xxl-25 align-items-center justify-content-center">
+                        <div class="text-center">
+                            <h1 style="margin-top: 10px; font-size: 40px; font-family: 'Manjari', sans-serif;">C R E A T E&ensp;A N&ensp;A C C O U N T</h1>
+                            <p style="font-size: 20px; font-family: 'Manjari', sans-serif;">Join our community and start booking appointments with ease.</p>
+                        </div>
+    
+                        <div class="register-section">
+                            <div class="login-options">
+                                <button class="google-button" style="margin-top: -230px;" type="button">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/IOS_Google_icon.png" alt="Google Logo" style="width: 20px;">
+                                    Sign up with Google
+                                </button>
+                            </div>
+                            <p style="color: black; margin-left: 40px; padding-bottom: 20px;">⸻⸻⸻⸻⸻ or ⸻⸻⸻⸻⸻</p>
+    
+                            <form method="post" action="{% url 'register' %}" class="register-form">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{ form.username.label_tag }}
+                                    {{ form.username }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.email.label_tag }}
+                                    {{ form.email }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.first_name.label_tag }}
+                                    {{ form.first_name }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.last_name.label_tag }}
+                                    {{ form.last_name }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.password1.label_tag }}
+                                    {{ form.password1 }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.password2.label_tag }}
+                                    {{ form.password2 }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- ===============================================-->
+        <!--    End of Main Content-->
+        <!-- ===============================================-->
+    
+        <!-- ===============================================-->
+        <!--    JavaScripts-->
+        <!-- ===============================================-->
+        <script src="https://scripts.sirv.com/sirvjs/v3/sirv.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    </body>
+    
+    </html>

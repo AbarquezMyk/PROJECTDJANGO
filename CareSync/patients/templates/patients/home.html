@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- ===============================================-->
+        <!--    Document Title-->
+        <!-- ===============================================-->
+        <title>CareSync</title>
+
+        <!-- ===============================================-->
+        <!--    Favicons-->
+        <!-- ===============================================-->
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicons/favicon.ico' %}">
+        <link rel="manifest" href="{% static 'img/favicons/manifest.json' %}">
+        <meta name="msapplication-TileImage" content="{% static 'img/favicons/mstile-150x150.png' %}">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- ===============================================-->
+        <!--    Fonts-->
+        <!-- ===============================================-->
+        <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400&display=swap" rel="stylesheet">
+
+        <!-- ===============================================-->
+        <!--    Stylesheets-->
+        <!-- ===============================================-->
+        <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    </head>
+
+
+    <body>
+
+        <!-- ===============================================-->
+        <!--    Main Content-->
+        <!-- ===============================================-->
+        <main class="main" id="top">
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 d-block" data-navbar-on-scroll="data-navbar-on-scroll">
+            <div class="container">
+                <a class="navbar-brand" href="home.html">
+                    <img src="{% static 'img/gallery/logo.png' %}" width="140" alt="logo" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"> </span>
+                </button>
+                <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto pt-2 pt-lg-0 font-base">
+                        <li class="nav-item px-2"><a class="nav-link" aria-current="page" href="#about">About Us</a></li>
+                        <li class="nav-item px-2"><a class="nav-link" href="#departments">Find Doctor</a></li>
+                        <li class="nav-item px-2"><a class="nav-link" href="#findUs">Contact</a></li>
+                    </ul>
+                    <a class="btn btn-sm btn-outline-primary rounded-pill order-1 order-lg-0 ms-lg-4" href="{% url 'login' %}">Log In</a>
+                </div>
+            </div>
+        </nav>
+        
+        <section class="py-xxl-10 pb-0" id="home">
+            <div class="bg-holder bg-size" style="background-color: white;">
+            </div>        
+            <!--/.bg-holder-->
+
+            <div class="container" style="margin-top: -100px;">
+                <div class="row min-vh-xl-100 min-vh-xxl-25 align-items-center">
+                    <div class="col-md-7 col-xl-6 col-xxl-5 text-md-start text-center py-6 order-1 order-md-0">
+                        <h1 class="fw-light font-base" style="font-size: 32px; font-family: 'Manjari', sans-serif;">
+                            Find Your Doctor and <br>make an appointment.
+                        </h1>
+                        <p class="mb-2" style="font-size: 22px; font-family: 'Manjari', sans-serif;">
+                            Lorem ipsum dolor sit amet, consectetur <br> adipiscing elit, sed do eiusmod tempor <br> 
+                            incididunt ut labore et dolore magna aliqua.
+                        </p>
+                        <a class="btn btn-lg btn-primary rounded-pill" href="{% url 'register' %}" role="button">Register</a>
+                    </div>
+            
+                    <div class="col-md-5 col-xl-6 col-xxl-7 order-0 order-md-1 text-end">
+                        <img style="max-width: 140%; margin-top: -20px; margin-left: -70px;" src="{% static 'img/gallery/hero.png' %}" alt="hero-header" />
+                    </div>
+                </div>
+            </div>      
+        </section>
+    </main>
+    <!-- ===============================================-->
+    <!--    End of Main Content-->
+    <!-- ===============================================-->
+
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="{% static 'vendors/@popperjs/popper.min.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendors/is/is.min.js' %}"></script>
+    <script src="https://scripts.sirv.com/sirvjs/v3/sirv.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="{% static 'vendors/fontawesome/all.min.js' %}"></script>
+    <script src="{% static 'assets/js/theme.js' %}"></script>
+    </body>
+
+</html>

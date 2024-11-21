@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareSync - Calendar</title>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicons/favicon.ico' %}">
+    <link rel="manifest" href="{% static 'img/favicons/manifest.json' %}">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@latest/main.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            color: #023350;
+        }
+
+        #add-event-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #CED4DA;
+            z-index: 1000;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        #modal-background {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body style="font-family: 'Manjari', sans-serif; display: flex; margin: 0; padding: 0; height: 100vh;">
+    <!-- Sidebar -->
+    <div style="width: 250px; background-color: white; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #CED4DA; height: 100vh;">
+        <div style="text-align: center;">
+            <img src="{% static 'img/gallery/logo.png' %}" alt="CareSync Logo" style="width: 200px; height: auto; margin-top: -50px;">
+        </div>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/dashboard.png' %}" alt="Dashboard Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #023350; font-size: 18px; font-family: 'Manjari';">Dashboard</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/appointment-icon.png' %}" alt="Appointments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:appointment_history' %}" style="text-decoration: none; color: #023350; font-size: 18px; font-family: 'Manjari';">Appointments</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/calendar-icon.png' %}" alt="Calendar Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:calendar' %}" style="text-decoration: none; color: #023350; font-size: 18px; font-family: 'Manjari';">Calendar</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/payment-method.png' %}" alt="Payments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:credit_card' %}" style="text-decoration: none; color: #023350; font-size: 18px; font-family: 'Manjari';">Payments</a>
+            </li>
+        </ul>
+        <div style="text-align: center; margin-top: auto;">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="color: red; background: none; border: none; text-decoration: none; cursor: pointer;">Log Out</button>
+            </form> 
+        </div>
+    </div>
+
+    <!-- Main Content - Calendar Section -->
+    <div style="flex: 1; padding: 30px;">
+        <h2 style="color: #023350; font-family: 'Manjari';">Calendar</h2>
+        <div id="calendar" style="margin-top: 20px; max-width: 90%;"></div>
+    </div>
+
+    <!-- Modal for Adding Event -->
+    <div id="add-event-modal">
+        <h3 style="color: #023350; text-align: center;">Add New Event</h3>
+        <form id="add-event-form">
+            <label for="new-event-title">Event Title</label>
+            <input type="text" id="new-event-title" required><br><br>
+            <label for="new-event-time">Event Time</label>
+            <input type="time" id="new-event-time" required><br><br>
+            <button type="submit" style="background-color: #0288d1; color: white; padding: 10px;">Add Event</button>
+            <button type="button" id="cancel-add-event" style="padding: 10px;">Cancel</button>
+        </form>
+        <p id="modal-message" class="success-message"></p>
+    </div>
+
+    <div id="modal-background"></div>
+
+    <!-- JavaScripts and FullCalendar Initialization -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@latest/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var csrfToken = '{{ csrf_token }}';
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                editable: true,
+                selectable: true,
+                events: '/appointments/calendar/events/',
+
+                dateClick: function (info) {
+                    var modal = document.getElementById('add-event-modal');
+                    var modalBg = document.getElementById('modal-background');
+                    var modalMessage = document.getElementById('modal-message');
+                    var form = document.getElementById('add-event-form');
+                    var cancel = document.getElementById('cancel-add-event');
+
+                    modal.style.display = 'block';
+                    modalBg.style.display = 'block';
+                    modalMessage.textContent = '';
+
+                    form.onsubmit = function (e) {
+                        e.preventDefault();
+                        var title = document.getElementById('new-event-title').value;
+                        var time = document.getElementById('new-event-time').value;
+
+                        if (title && time) {
+                            var startDateTime = info.dateStr + 'T' + time;
+
+                            fetch('/appointments/calendar/events/add/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': csrfToken
+                                },
+                                body: JSON.stringify({ title: title, start: startDateTime })
+                            })
+                            .then(response => response.json())
+                            .then(event => {
+                                if (event.error) {
+                                    modalMessage.textContent = event.error;
+                                    modalMessage.className = 'error-message';
+                                } else {
+                                    calendar.addEvent(event);
+                                    modalMessage.textContent = 'Event added successfully!';
+                                    modalMessage.className = 'success-message';
+                                    setTimeout(() => closeModal(), 1000);
+                                }
+                            })
+                            .catch(error => {
+                                modalMessage.textContent = 'Error adding event.';
+                                modalMessage.className = 'error-message';
+                            });
+                        }
+                    };
+
+                    cancel.onclick = closeModal;
+                    modalBg.onclick = closeModal;
+
+                    function closeModal() {
+                        modal.style.display = 'none';
+                        modalBg.style.display = 'none';
+                        form.reset();
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

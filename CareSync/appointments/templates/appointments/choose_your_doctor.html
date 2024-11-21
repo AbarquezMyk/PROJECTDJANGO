@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareSync - Choose Your Doctor</title>
+    <link rel="icon" href="{% static 'img/favicons/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            width: 60%;
+            max-width: 800px;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #343a40;
+            font-weight: 700;
+        }
+        .main-content h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #023350;
+        }
+        .main-content p {
+            font-size: 16px;
+            color: #555;
+        }
+        .btn-primary {
+            background-color: #023350;
+            border-color: #023350;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+        }
+        .doctor-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .doctor-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .doctor-profile {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+
+        .doctor-picture {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .doctor-specialty {
+            font-size: 16px;
+            color: #666;
+        }
+        .doctor-btn {
+            background-color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .doctor-btn:hover {
+            background-color: #f7f7f7;
+        }
+
+        .doctor-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #023350;
+        }
+    </style>
+</head>
+<body style="font-family: 'Manjari', sans-serif; display: flex; margin: 0; padding: 0; height: 100vh;">
+    <!-- Sidebar -->
+    <div style="width: 250px; background-color: white; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #CED4DA; height: 100vh;">
+        <div style="text-align: center;">
+            <img src="{% static 'img/gallery/logo.png' %}" alt="CareSync Logo" style="width: 200px; height: auto; margin-top: -50px;">
+        </div>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/dashboard.png' %}" alt="Dashboard Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Dashboard</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/appointment-icon.png' %}" alt="Appointments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:appointment_history' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Appointments</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/calendar-icon.png' %}" alt="Calendar Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="#" style="text-decoration: none; color: #023350; font-size: 18px;">Calendar</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/payment-method.png' %}" alt="Payments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="#" style="text-decoration: none; color: #023350; font-size: 18px;">Payments</a>
+            </li>
+            <!-- <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/setting.png' %}" alt="Settings Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="#" style="text-decoration: none; color: #023350; font-size: 18px;">Settings</a>
+            </li> -->
+        </ul>
+        <div style="text-align: center; margin-top: auto;">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="color: red; background: none; border: none; text-decoration: none; cursor: pointer;">Log Out</button>
+            </form> 
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div style="flex: 1; padding: 30px;">
+        <div class="main-content">
+            <h2>Choose Your Doctor</h2>
+            <p>Please select a department to view available doctors.</p>
+            <div class="row">
+                {% for department in departments %}
+                <div class="col-md-4">
+                    <h3>{{ department.name }}</h3>
+                    <p>{{ department.description }}</p>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ department.id }}">
+                        View Doctors
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    {% for department in departments %}
+    <div class="modal fade" id="{{ department.id }}" tabindex="-1" aria-labelledby="{{ department.id }}Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="{{ department.id }}Label">{{ department.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Doctors in {{ department.name }}</h4>
+                    <ul class="doctor-list">
+                        {% for doctor in department.doctor_set.all %}
+                        <li class="doctor-item">
+                            <button type="button" class="doctor-btn" data-bs-toggle="modal" data-bs-target="#doctor-{{ doctor.id }}">
+                                <div class="doctor-profile">
+                                    <img src="{{ doctor.picture.url }}" alt="Doctor Picture" class="doctor-picture">
+                                </div>
+                                <div class="doctor-info">
+                                    <h4 class="doctor-name">{{ doctor.name }}</h4>
+                                    <p class="doctor-specialty">{{ doctor.specialty }}</p>
+                                </div>
+                            </button>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Modal -->
+    {% for doctor in department.doctor_set.all %}
+    <div class="modal fade" id="doctor-{{ doctor.id }}" tabindex="-1" aria-labelledby="doctor-{{ doctor.id }}Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="doctor-{{ doctor.id }}Label">{{ doctor.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{{ doctor.picture.url }}" alt="Doctor Picture" class="doctor-picture">
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ doctor.name }}</h4>
+                            <p>{{ doctor.specialty }}</p>
+                            <p>{{ doctor.bio }}</p>
+                            <button type="button" class="btn btn-primary" id="choose-doctor-btn" data-doctor-name="{{ doctor.name }}">Choose Doctor</button>
+                        </div>
+                    </div>
+                    <h4>Reviews</h4>
+                    <form>
+                        <div class="form-group">
+                            <textarea class="form-control" id="review" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                    <ul>
+                        {% for review in doctor.review_set.all %}
+                        <li>
+                            <p>{{ review.text }}</p>
+                            <p>Rating: {{ review.rating }}/5</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const chooseDoctorBtn = document.getElementById('choose-doctor-btn');
+
+        // Add an event listener to the button
+        chooseDoctorBtn.addEventListener('click', (e) => {
+            // Get the doctor name from the button data attribute
+            const doctorName = e.target.getAttribute('data-doctor-name');
+
+            // Redirect to the appointment form HTML with the chosen doctor's name
+            window.location.href = `/appointment_form/${doctorName}`;
+        });
+    </script>
+</body>
+</html>
