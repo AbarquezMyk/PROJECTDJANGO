@@ -31,7 +31,7 @@
             margin-bottom: 30px;
         }
         .dashboard-header h1 {
-            font-size: 28px;
+            font-size: 35px;
         }
         .profile-link {
             display: flex;
@@ -39,14 +39,16 @@
             text-decoration: none;
             font-size: 16px;
             color: #343a40;
-            border: 1px solid #023350;
             padding: 8px 15px;
             border-radius: 5px;
         }
         .profile-link img {
             margin-right: 10px;
-            width: 25px;
-            height: 25px;
+            width: 40px; /* Adjust size as needed */
+            height: 40px;
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image scales properly within the circle */
+            border: 2px solid #1D3557; /* Optional: Add a border for styling */
         }
         .cards {
             display: grid;
@@ -120,8 +122,12 @@
         <div class="dashboard-header">
             <h1>Welcome, {{ first_name }}</h1>
             <a href="{% url 'profile' %}" class="profile-link">
-                <img src="{% static 'img/gallery/person_logo.png' %}" alt="Profile Icon">
-                {{ first_name }} {{ last_name }}
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Icon">
+                {% else %}
+                    <img src="{% static 'img/gallery/person_logo.png' %}" alt="Default Profile Icon">
+                {% endif %}
+                {{ user.first_name }} {{ user.last_name }}
             </a>
         </div>
 
