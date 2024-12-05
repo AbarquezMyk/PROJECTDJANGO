@@ -19,3 +19,9 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'profile_picture')
+        widgets = {
+            'profile_picture': forms.ClearableFileInput(attrs={
+                'class': 'form-control', 
+                'accept': 'image/*'  # Optional: Restrict file types to images
+            }),
+        }
