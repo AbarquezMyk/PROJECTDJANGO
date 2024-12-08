@@ -4,36 +4,130 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ===============================================-->
-    <!--    Document Title-->
-    <!-- ===============================================-->
     <title>CareSync - Appointment History</title>
 
-    <!-- ===============================================-->
-    <!--    Favicons-->
-    <!-- ===============================================-->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicons/favicon.ico' %}">
-    <link rel="manifest" href="{% static 'img/favicons/manifest.json' %}">
-    <meta name="msapplication-TileImage" content="{% static 'img/favicons/mstile-150x150.png' %}">
-    <meta name="theme-color" content="#ffffff">
-
-    <!-- ===============================================-->
-    <!--    Fonts-->
-    <!-- ===============================================-->
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400&display=swap" rel="stylesheet">
-
-    <!-- ===============================================-->
-    <!--    Stylesheets-->
-    <!-- ===============================================-->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400&display=swap" rel="stylesheet">
 
     <style>
         body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header a {
+            padding: 10px 20px;
+            border: 1px solid #023350;
             color: #023350;
+            text-decoration: none;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header a img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 10px;
+            border: 1px solid #CED4DA;
+            border-radius: 5px;
+            width: 150px;
+        }
+
+        .appointment-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #CED4DA;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .appointment-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .appointment-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .appointment-card h3 {
+            margin: 0;
+        }
+
+        .appointment-card p {
+            margin: 5px 0;
+        }
+
+        .appointment-card .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .appointment-card button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            border: 1px solid red;
+            color: red;
+            background: transparent;
+        }
+
+        .btn-detail {
+            background-color: #023350;
+            color: white;
+            border: none;
+        }
+
+        .btn-pay {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .btn-pay:hover {
+            background-color: #218838;
         }
     </style>
 </head>
@@ -69,54 +163,43 @@
         </div>
     </div>
 
-    <!-- ===============================================-->
-    <!--    Main Content-->
-    <!-- ===============================================-->
-    <div style="flex: 1; padding: 30px;">
-        <div style="max-width: 800px; margin: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h1 style="font-size: 24px; font-weight: bold; font-family: 'Manjari';">My appointments</h1>
-                <a href="{% url 'profile' %}" style="padding: 10px 20px; border: 1px solid #023350; background-color: white; color: black; text-decoration: none; border-radius: 5px; font-family: 'Manjari';">
-                    <img src="{% static 'img/gallery/person_logo.png' %}" alt="Dashboard Icon" style="width: 20px; height: 20px; margin-right: 10px;">
-                    {{ first_name }} {{ last_name }}
-                </a>                
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>My appointments</h1>
+                <a href="{% url 'profile' %}"><img src="{% static 'img/gallery/person_logo.png' %}" alt="Profile Icon">{{ first_name }} {{ last_name }}</a>
             </div>
 
-            <!-- Filters -->
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <input type="text" placeholder="Search" style="padding: 10px; border: 1px solid #CED4DA; border-radius: 5px; width: 150px; font-family: 'Manjari', sans-serif;"> <!-- Updated -->
-                <select style="padding: 10px; color: #023350; border: 1px solid #CED4DA; border-radius: 5px; font-family: 'Manjari', sans-serif;"> <!-- Updated -->
-                    <option>All Departments</option>
-                </select>
-                <input type="date" style="padding: 10px; color: #023350; border: 1px solid #CED4DA; border-radius: 5px; font-family: 'Manjari', sans-serif;"> <!-- Updated -->
-            </div>
-
-            <h2>Pending Appointments (Not yet payed)</h2>
-            {% if pending_appointments %}
-                {% for appointment in pending_appointments %}
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #CED4DA; border-radius: 10px; margin-bottom: 10px; background-color: #fff;">
-                        <div style="flex: 1; padding: 0 20px;">
-                            <h3>{{ appointment.doctor_name }}</h3>
-                            <p>{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
-                        </div>
-                        <div>
-                            <button style="padding: 10px 20px; border-color: red; color: red; background-color: transparent; cursor: pointer; border-radius: 5px; margin-right: 10px;">Cancel</button>
-                            <button style="padding: 10px 20px; background-color: #023350; color: white; border: none; cursor: pointer; border-radius: 5px;">Detail</button>
-                        </div>
+            <!-- Pending Appointments -->
+            <h2>Pending Appointments (Not yet paid)</h2>
+            {% for appointment in pending_appointments %}
+                <div class="appointment-card">
+                    <img src="{{ appointment.doctor.picture.url }}" alt="{{ appointment.doctor.name }}">
+                    <div style="flex: 1;">
+                        <h3>{{ appointment.doctor.name }}</h3>
+                        <p>{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
+                        <p>{{ appointment.reason }}</p>
                     </div>
-                {% endfor %}
-            {% else %}
-            
+                    <div class="actions">
+                        <button class="btn-cancel">Cancel</button>
+                        <button class="btn-detail">Detail</button>
+                        <button class="btn-pay" onclick="handlePayment({{ appointment.id }})">Pay</button>
+                    </div>
+                </div>
+            {% empty %}
                 <p>No pending appointments.</p>
-            {% endif %}
+            {% endfor %}
 
-            <h2>Upcoming Appointments</h2>
+            <!-- Upcoming Appointments -->
+            <h2 style="margin-top: 30px; font-family: 'Manjari', sans-serif; font-size: 22px; color: #023350;">Upcoming Appointments</h2>
             {% if upcoming_appointments %}
                 {% for appointment in upcoming_appointments %}
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #CED4DA; border-radius: 10px; margin-bottom: 10px; background-color: #fff;">
-                        <div style="flex: 1; padding: 0 20px;">
-                            <h3>{{ appointment.doctor_name }}</h3>
-                            <p>{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
+                    <div style="display: flex; align-items: center; padding: 15px; border: 1px solid #CED4DA; border-radius: 10px; margin-bottom: 15px; background-color: #f9f9f9; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                        <img src="{{ appointment.doctor.profile_picture.url }}" alt="{{ appointment.doctor.name }}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 20px;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0; font-size: 18px; font-family: 'Manjari', sans-serif; color: #023350;">{{ appointment.doctor.name }}</h3>
+                            <p style="margin: 5px 0; color: #555;">{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
+                            <p style="margin: 5px 0; color: #777;">{{ appointment.reason }}</p>
                         </div>
                         <div>
                             <button style="padding: 10px 20px; border-color: red; color: red; background-color: transparent; cursor: pointer; border-radius: 5px; margin-right: 10px;">Cancel</button>
@@ -125,41 +208,33 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p>No upcoming appointments.</p>
+                <p style="color: #777;">No upcoming appointments.</p>
             {% endif %}
 
-            <h2>Past Appointments</h2>
+            <!-- Past Appointments -->
+            <h2 style="margin-top: 30px; font-family: 'Manjari', sans-serif; font-size: 22px; color: #023350;">Past Appointments</h2>
             {% if past_appointments %}
                 {% for appointment in past_appointments %}
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #CED4DA; border-radius: 10px; margin-bottom: 10px; background-color: #fff;">
-                        <div style="flex: 1; padding: 0 20px;">
-                            <h3>{{ appointment.doctor_name }}</h3>
-                            <p>{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
-                        </div>
-                        <div>
-                            <button style="padding: 10px 20px; background-color: #023350; color: white; border: none; cursor: pointer; border-radius: 5px;">Detail</button>
+                    <div style="display: flex; align-items: center; padding: 15px; border: 1px solid #CED4DA; border-radius: 10px; margin-bottom: 15px; background-color: #f9f9f9; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                        <img src="{{ appointment.doctor.profile_picture.url }}" alt="{{ appointment.doctor.name }}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 20px;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0; font-size: 18px; font-family: 'Manjari', sans-serif; color: #023350;">{{ appointment.doctor.name }}</h3>
+                            <p style="margin: 5px 0; color: #555;">{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
+                            <p style="margin: 5px 0; color: #777;">{{ appointment.reason }}</p>
                         </div>
                     </div>
                 {% endfor %}
             {% else %}
-                <p>No past appointments.</p>
+                <p style="color: #777;">No past appointments.</p>
             {% endif %}
+
         </div>
     </div>
 
-    <!-- ===============================================-->
-    <!--    End of Main Content-->
-    <!-- ===============================================-->
-
-    <!-- ===============================================-->
-    <!--    JavaScripts-->
-    <!-- ===============================================-->
-    <script src="{% static 'vendors/@popperjs/popper.min.js' %}"></script>
-    <script src="{% static 'vendors/bootstrap/bootstrap.min.js' %}"></script>
-    <script src="{% static 'vendors/is/is.min.js' %}"></script>
-    <script src="https://scripts.sirv.com/sirvjs/v3/sirv.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
-    <script src="{% static 'vendors/fontawesome/all.min.js' %}"></script>
-    <script src="{% static 'assets/js/theme.js' %}"></script>
+    <script>
+        function handlePayment(appointmentId) {
+            window.location.href = `/appointments/pay/${appointmentId}/`;
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,35 @@
+<div class="modal fade" id="doctor-{{ doctor.id }}" tabindex="-1" aria-labelledby="doctor-{{ doctor.id }}Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="doctor-{{ doctor.id }}Label">{{ doctor.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ doctor.picture.url }}" alt="Doctor Picture" class="doctor-picture">
+                    </div>
+                    <div class="col-md-8">
+                        <h4>{{ doctor.name }}</h4>
+                        <p>{{ doctor.specialty }}</p>
+                        <p>{{ doctor.bio }}</p>
+                        <button type="button" class="btn btn-primary choose-doctor-btn" data-doctor-name="{{ doctor.name }}">Choose Doctor</button>
+                    </div>
+                </div>
+                <h4>Reviews</h4>
+                <ul>
+                    {% for review in doctor.review_set.all %}
+                    <li>
+                        <p>{{ review.text }}</p>
+                        <p>Rating: {{ review.rating }}/5</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

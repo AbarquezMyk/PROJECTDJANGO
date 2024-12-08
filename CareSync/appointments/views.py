@@ -12,6 +12,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.dateparse import parse_datetime
 import json
 from .models import Event
+from django.utils.timezone import now  # Import `now`
+
 
 
 def choose_your_doctor(request):
@@ -19,55 +21,59 @@ def choose_your_doctor(request):
     print(departments)
     return render(request, 'appointments/choose_your_doctor.html', {'departments': departments})
 
+
 @login_required
 def appointment_form(request, doctor_name):
     doctor = AdminDashboardDoctor.objects.get(name=doctor_name)
     if request.method == 'POST':
-        patient_name = request.POST.get('patient_name')
         appointment_date = request.POST.get('appointment_date')
+        reason = request.POST.get('reason')  # Get the reason input
         appointment = Appointment.objects.create(
             patient=request.user,
             doctor=doctor,
-            appointment_date=appointment_date
+            appointment_date=appointment_date,
+            reason=reason  # Save the reason
         )
-        return redirect('appointments:appointment-history')
+        return redirect('appointments:appointment_history')
     return render(request, 'appointments/appointment_form.html', {'doctor': doctor})
 
 @login_required
 def payment(request, appointment_id):
-    appointment = Appointment.objects.get(id=appointment_id)
+    appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
+    
     if request.method == 'POST':
-        # Process the payment
-        pass
+        # Mock payment processing logic
+        payment_method = request.POST.get('payment_method')
+        amount = 100.00  # Example amount
+
+        # Save payment record
+        Payment.objects.create(
+            appointment=appointment,
+            amount=amount,
+            payment_method=payment_method
+        )
+
+        # Update appointment status
+        appointment.status = 'upcoming'
+        appointment.save()
+
+        messages.success(request, "Payment successful. Your appointment is now confirmed!")
+        return redirect('appointments:appointment_history')
+
     return render(request, 'appointments/payment.html', {'appointment': appointment})
+
 
 @login_required
 def appointment_history(request):
-    if request.method == 'POST':
-        # Process the form data and create a new Appointment object
-        user = request.user
-        doctor_name = request.POST.get('doctor_name')
-        try:
-            doctor = AdminDashboardDoctor.objects.get(name=doctor_name)
-        except AdminDashboardDoctor.DoesNotExist:
-            # Handle the case where the doctor instance does not exist
-            return render(request, 'appointments/error.html', {'error_message': 'Doctor not found'})
-        appointment_date = request.POST.get('appointment_date')
+    pending_appointments = Appointment.objects.filter(patient=request.user, status='pending')
+    upcoming_appointments = Appointment.objects.filter(patient=request.user, status='upcoming')
+    past_appointments = Appointment.objects.filter(patient=request.user, status='past')
 
-        appointment = Appointment(
-            patient=user,
-            doctor=doctor,
-            appointment_date=appointment_date
-        )
-        appointment.save()
-
-        # Redirect to the appointment history page
-        return redirect('appointments:appointment_history')
-
-    # Handle the GET request - render the appointment history page
-    appointments = Appointment.objects.filter(patient=request.user).order_by('-appointment_date')
-    return render(request, 'appointments/appointment_history.html', {'appointments': appointments})
-
+    return render(request, 'appointments/appointment_history.html', {
+        'pending_appointments': pending_appointments,
+        'upcoming_appointments': upcoming_appointments,
+        'past_appointments': past_appointments,
+    })
 
 @login_required
 def payment_history(request):

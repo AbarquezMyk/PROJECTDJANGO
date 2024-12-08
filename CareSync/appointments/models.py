@@ -4,6 +4,7 @@ from django.shortcuts import render
 from admin_dashboard.models import Department, Doctor as AdminDashboardDoctor
 from django.contrib.auth.models import User
 
+
 class CreditCard(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     cardholder_name = models.CharField(max_length=100)
@@ -30,14 +31,21 @@ class Doctor(models.Model):
     picture = models.ImageField(upload_to='doctors', blank=True, null=True)
 
 class Appointment(models.Model):
+    id = models.AutoField(primary_key=True)  # Explicit primary key
     doctor = models.ForeignKey(AdminDashboardDoctor, on_delete=models.CASCADE)
     patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     appointment_date = models.DateTimeField()
-    status = models.CharField(max_length=10, choices=[
-        ('pending', 'Pending'),
-        ('upcoming', 'Upcoming'),
-        ('past', 'Past'),
-    ], default='pending')
+    reason = models.TextField()  # Define the field type
+    status = models.CharField(
+        max_length=10,
+        choices=[
+            ('pending', 'Pending'),
+            ('upcoming', 'Upcoming'),
+            ('past', 'Past'),
+        ],
+        default='pending',
+    )
+
 
 class Payment(models.Model):
     appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
