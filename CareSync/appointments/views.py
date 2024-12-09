@@ -27,53 +27,84 @@ def appointment_form(request, doctor_name):
     doctor = AdminDashboardDoctor.objects.get(name=doctor_name)
     if request.method == 'POST':
         appointment_date = request.POST.get('appointment_date')
-        reason = request.POST.get('reason')  # Get the reason input
+        reason = request.POST.get('reason')
+        print(f"Received data: {appointment_date}, {reason}, {request.user.username}")
         appointment = Appointment.objects.create(
             patient=request.user,
             doctor=doctor,
             appointment_date=appointment_date,
-            reason=reason  # Save the reason
+            reason=reason
         )
+        print(f"Appointment created: {appointment}")
         return redirect('appointments:appointment_history')
     return render(request, 'appointments/appointment_form.html', {'doctor': doctor})
 
+
 @login_required
-def payment(request, appointment_id):
+def pay_appointment(request, appointment_id):
+    # Fetch the appointment and ensure it's for the logged-in user
     appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
-    
-    if request.method == 'POST':
-        # Mock payment processing logic
-        payment_method = request.POST.get('payment_method')
-        amount = 100.00  # Example amount
+    credit_cards = CreditCard.objects.filter(user=request.user)  # Define credit_cards
+    payment_amount = 500  # Fixed payment amount
 
-        # Save payment record
-        Payment.objects.create(
-            appointment=appointment,
-            amount=amount,
-            payment_method=payment_method
-        )
-
-        # Update appointment status
-        appointment.status = 'upcoming'
-        appointment.save()
-
-        messages.success(request, "Payment successful. Your appointment is now confirmed!")
+    # Ensure the appointment is still pending payment
+    if appointment.status != 'pending':
+        messages.error(request, "This appointment has already been paid or is no longer pending.")
         return redirect('appointments:appointment_history')
 
-    return render(request, 'appointments/payment.html', {'appointment': appointment})
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+        
+        if payment_method == 'cash':
+            # Handle cash payment
+            appointment.status = 'upcoming'
+            appointment.payment_method = 'cash'
+            appointment.save()
+            messages.success(request, f"Payment of {payment_amount} was successful. Your appointment has been confirmed.")
+            return redirect('appointments:appointment_history')
+        
+        elif payment_method == 'credit_card':
+            credit_card_id = request.POST.get('credit_card_id')
+            selected_card = get_object_or_404(CreditCard, id=credit_card_id, user=request.user)
+            
+            # Placeholder for payment gateway integration
+            # e.g., process_payment(selected_card, payment_amount)
+            
+            appointment.status = 'upcoming'
+            appointment.payment_method = f"Card ending in {selected_card.card_number[-4:]}"
+            appointment.save()
+            messages.success(request, f"Payment of {payment_amount} was successful. Your appointment has been confirmed.")
+            return redirect('appointments:appointment_history')
+
+    # Render the payment page with credit card options
+    return render(request, 'appointments/pay.html', {
+        'appointment': appointment,
+        'credit_cards': credit_cards,
+        'payment_amount': payment_amount,  # Pass payment amount to the template
+    })
 
 
 @login_required
 def appointment_history(request):
-    pending_appointments = Appointment.objects.filter(patient=request.user, status='pending')
-    upcoming_appointments = Appointment.objects.filter(patient=request.user, status='upcoming')
-    past_appointments = Appointment.objects.filter(patient=request.user, status='past')
+    # Fetch and categorize appointments for the logged-in user
+    pending_appointments = Appointment.objects.filter(
+        patient=request.user, status='pending'
+    ).order_by('appointment_date')
+    
+    upcoming_appointments = Appointment.objects.filter(
+        patient=request.user, status='upcoming', appointment_date__gte=now()
+    ).order_by('appointment_date')
+    
+    past_appointments = Appointment.objects.filter(
+        patient=request.user, appointment_date__lt=now()
+    ).exclude(status='pending').order_by('-appointment_date')
 
     return render(request, 'appointments/appointment_history.html', {
         'pending_appointments': pending_appointments,
         'upcoming_appointments': upcoming_appointments,
         'past_appointments': past_appointments,
     })
+
 
 @login_required
 def payment_history(request):

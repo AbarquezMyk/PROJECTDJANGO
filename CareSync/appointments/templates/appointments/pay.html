@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay for Appointment</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f5f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar img {
+            max-width: 180px;
+            margin: 0 auto;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .sidebar ul li {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        .sidebar ul li img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .sidebar ul li a {
+            color: #023350;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar ul li a:hover {
+            color: #0056b3;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+        }
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-container h1 {
+            font-size: 22px;
+            color: #023350;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .payment-details p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .form-group select, 
+        .btn-pay {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            outline: none;
+        }
+        .form-group select:hover, 
+        .btn-pay:hover {
+            border-color: #ccc;
+        }
+        .btn-pay {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-pay:hover {
+            background-color: #218838;
+        }
+        #credit-card-options {
+            display: none;
+        }
+    </style>
+</head>
+<body style="display: flex; margin: 0; padding: 0; height: 100vh;">
+    <!-- Sidebar -->
+    <div style="width: 250px; background-color: white; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #CED4DA; height: 100vh;">
+        <div style="text-align: center;">
+            <img src="{% static 'img/gallery/logo.png' %}" alt="CareSync Logo" style="width: 200px; height: auto;">
+        </div>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/dashboard.png' %}" alt="Dashboard Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Dashboard</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/appointment-icon.png' %}" alt="Appointments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:appointment_history' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Appointments</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/calendar-icon.png' %}" alt="Calendar Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:calendar' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Calendar</a>
+            </li>
+            <li style="margin: 15px 0; display: flex; align-items: center;">
+                <img src="{% static 'img/gallery/payment-method.png' %}" alt="Payments Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+                <a href="{% url 'appointments:credit_card' %}" style="text-decoration: none; color: #023350; font-size: 18px;">Payments</a>
+            </li>
+        </ul>
+        <div style="text-align: center; margin-top: auto;">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="color: red; background: none; border: none; cursor: pointer;">Log Out</button>
+            </form> 
+        </div>
+    </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="payment-container">
+                <h1>Confirm Payment</h1>
+                <div class="payment-details">
+                    <p><strong>Doctor:</strong> {{ appointment.doctor.name }}</p>
+                    <p><strong>Appointment Date:</strong> {{ appointment.appointment_date|date:"d.m.Y - H:i" }}</p>
+                    <p><strong>Reason:</strong> {{ appointment.reason }}</p>
+                    <p><strong>Amount:</strong> Php {{ payment_amount }}</p>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="payment-method">Choose Payment Method:</label>
+                        <select id="payment-method" name="payment_method" onchange="toggleCreditCardOptions()">
+                            <option value="cash">Cash</option>
+                            <option value="credit_card">Credit Card</option>
+                        </select>
+                    </div>
+                    <div id="credit-card-options" class="form-group">
+                        <label for="credit-card">Select Credit Card:</label>
+                        <select id="credit-card" name="credit_card_id">
+                            {% for card in credit_cards %}
+                            <option value="{{ card.id }}">{{ card.masked_card_number }} - {{ card.cardholder_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-pay" formaction="{% url 'appointments:pay_appointment' appointment.id %}">Pay Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleCreditCardOptions() {
+        const paymentMethod = document.getElementById('payment-method').value;
+        const creditCardOptions = document.getElementById('credit-card-options');
+        creditCardOptions.style.display = paymentMethod === 'credit_card' ? 'block' : 'none';
+    }
+    </script>
+</body>
+</html>

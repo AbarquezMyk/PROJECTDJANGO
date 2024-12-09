@@ -31,20 +31,48 @@ class Doctor(models.Model):
     picture = models.ImageField(upload_to='doctors', blank=True, null=True)
 
 class Appointment(models.Model):
-    id = models.AutoField(primary_key=True)  # Explicit primary key
-    doctor = models.ForeignKey(AdminDashboardDoctor, on_delete=models.CASCADE)
-    patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('upcoming', 'Upcoming'),
+        ('past', 'Past'),
+    ]
+
+    id = models.AutoField(primary_key=True)
+    # Reference to Doctor model from the 'admin_dashboard' app
+    doctor = models.ForeignKey(
+        'admin_dashboard.Doctor',
+        on_delete=models.CASCADE,
+        related_name='appointments'
+    )
+    patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='appointments')
     appointment_date = models.DateTimeField()
-    reason = models.TextField()  # Define the field type
+    reason = models.TextField()
     status = models.CharField(
         max_length=10,
-        choices=[
-            ('pending', 'Pending'),
-            ('upcoming', 'Upcoming'),
-            ('past', 'Past'),
-        ],
+        choices=STATUS_CHOICES,
         default='pending',
     )
+    payment_method = models.CharField(
+        max_length=50,
+        choices=[
+            ('none', 'None'),
+            ('cash', 'Cash'),
+            ('credit_card', 'Credit Card'),
+        ],
+        default='none',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["appointment_date"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["doctor", "patient"]),
+        ]
+    
+    def __str__(self):
+        return f"{self.patient} - {self.doctor} on {self.appointment_date} [{self.status}]"
 
 
 class Payment(models.Model):

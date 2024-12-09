@@ -92,7 +92,7 @@
     
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="form-container">
-            <form action="{% url 'appointments:appointment_history' %}" method="post">
+            <form action="{% url 'appointments:appointment_form' doctor.name %}" method="post">
                 {% csrf_token %}
                 <h2>Book an Appointment</h2>
                 
