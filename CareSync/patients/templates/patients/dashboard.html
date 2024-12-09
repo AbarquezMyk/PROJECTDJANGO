@@ -138,15 +138,29 @@
                 <a href="{% url 'appointments:choose_your_doctor' %}" class="btn btn-primary">Book Now</a>
             </div>
             <div class="card">
-                <h3>Upcoming Appointments</h3>
-                <p>View your upcoming appointments and stay prepared.</p>
-                <a href="{% url 'appointments:appointment_history' %}" class="btn btn-primary">View Appointments</a>
-            </div>
-            <div class="card">
                 <h3>Payment History</h3>
                 <p>Check your past payments and billing information.</p>
                 <a href="{% url 'appointments:credit_card' %}" class="btn btn-primary">View Payments</a>
             </div>
+        </div>
+
+        <div class="card">
+            <h3>Upcoming Appointments</h3>
+            <p>View your upcoming appointments and stay prepared.</p>
+            {% if upcoming_appointments %}
+                <ul style="list-style: none; padding: 0;">
+                    {% for appointment in upcoming_appointments %}
+                        <li style="margin-bottom: 10px; padding: 10px; border: 1px solid #CED4DA; border-radius: 5px; background-color: #fff;">
+                            <strong>{{ appointment.doctor.name }}</strong><br>
+                            <span>{{ appointment.appointment_date|date:"d.m.Y - H:i" }}</span><br>
+                            <span>{{ appointment.reason }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No upcoming appointments.</p>
+            {% endif %}
+            <a href="{% url 'appointments:appointment_history' %}" class="btn btn-primary">View All</a>
         </div>
     </div>
 

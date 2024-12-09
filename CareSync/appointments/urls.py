@@ -14,6 +14,7 @@ urlpatterns = [
     path('cards/delete/<int:card_id>/', views.delete_card, name='delete_card'),
     path('calendar/', views.calendar_view, name='calendar'),
     path('calendar/events/', views.get_events, name='get_events'),
+    path('calendar/appointments/', views.get_upcoming_appointments, name='calendar_appointments'),
     path('calendar/events/add/', views.add_event, name='add_event'),
     path('calendar/events/edit/<int:event_id>/', views.edit_event, name='edit_event'),
     path('calendar/events/delete/<int:event_id>/', views.delete_event, name='delete_event'),

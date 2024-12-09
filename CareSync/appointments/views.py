@@ -15,12 +15,10 @@ from .models import Event
 from django.utils.timezone import now  # Import `now`
 
 
-
 def choose_your_doctor(request):
     departments = Department.objects.all()
     print(departments)
     return render(request, 'appointments/choose_your_doctor.html', {'departments': departments})
-
 
 @login_required
 def appointment_form(request, doctor_name):
@@ -263,3 +261,36 @@ def delete_event(request, event_id):
             return JsonResponse({'error': 'Event not found'}, status=404)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def get_upcoming_appointments(request):
+    if request.user.is_authenticated:
+        appointments = Appointment.objects.filter(user=request.user, appointment_date__gte=now())
+        appointment_data = [
+            {
+                "id": appt.id,
+                "title": f"Appointment with {appt.doctor.name}",
+                "start": appt.appointment_date.isoformat(),
+                "description": appt.reason,
+            }
+            for appt in appointments
+        ]
+        return JsonResponse(appointment_data, safe=False)
+    else:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+@login_required
+def calendar_appointments(request):
+    upcoming_appointments = Appointment.objects.filter(
+        patient=request.user, appointment_date__gte=now()
+    ).order_by('appointment_date')
+
+    data = [
+        {
+            "id": appt.id,
+            "title": f"Appointment with Dr. {appt.doctor.name}",
+            "start": appt.appointment_date.isoformat(),
+            "description": appt.reason,
+        }
+        for appt in upcoming_appointments
+    ]
+    return JsonResponse(data, safe=False)

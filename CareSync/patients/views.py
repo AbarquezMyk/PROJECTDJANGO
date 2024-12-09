@@ -3,6 +3,21 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import RegistrationForm, LoginForm, ProfileForm
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
+from appointments.models import Appointment
+from django.utils.timezone import now
+
+def dashboard_view(request):
+    # Fetch upcoming appointments for the logged-in user
+    upcoming_appointments = Appointment.objects.filter(
+        user=request.user,
+        appointment_date__gte=now()
+    ).order_by('appointment_date')
+    
+    context = {
+        'first_name': request.user.first_name,
+        'upcoming_appointments': upcoming_appointments,
+    }
+    return render(request, 'dashboard.html', context)
 
 
 def register(request):
