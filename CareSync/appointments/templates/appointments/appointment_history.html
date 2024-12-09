@@ -35,7 +35,6 @@
 
         .header a {
             padding: 10px 20px;
-            border: 1px solid #023350;
             color: #023350;
             text-decoration: none;
             border-radius: 5px;
@@ -43,9 +42,22 @@
             align-items: center;
         }
 
-        .header a img {
+        .profile-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 16px;
+            color: #343a40;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+        .profile-link img {
             margin-right: 10px;
-            width: 20px;
+            width: 40px; /* Adjust size as needed */
+            height: 40px;
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image scales properly within the circle */
+            border: 2px solid #1D3557; /* Optional: Add a border for styling */
         }
 
         .filters {
@@ -167,7 +179,16 @@
         <div class="main-content">
             <div class="header">
                 <h1>My appointments</h1>
-                <a href="{% url 'profile' %}"><img src="{% static 'img/gallery/person_logo.png' %}" alt="Profile Icon">{{ first_name }} {{ last_name }}</a>
+                <div class="dashboard-header">
+                    <a href="{% url 'profile' %}" class="profile-link">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Profile Icon">
+                        {% else %}
+                            <img src="{% static 'img/gallery/person_logo.png' %}" alt="Default Profile Icon">
+                        {% endif %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    </a>
+                </div>
             </div>
 
             <!-- Pending Appointments -->
