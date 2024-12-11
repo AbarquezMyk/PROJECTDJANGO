@@ -145,13 +145,13 @@
         <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 d-block" data-navbar-on-scroll="data-navbar-on-scroll">
             <div class="container">
                 <a class="navbar-brand" href="{% url 'home' %}">
-                    <img src="{% static 'img/gallery/logo.png' %}" width="180" alt="logo" /> <!-- Increased size -->
+                    <img src="{% static 'img/gallery/logo.png' %}" width="280" alt="logo" style="margin-top: -60px; margin-left: -200px;" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"> </span>
                 </button>
                 <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">
-                    <a href="{% url 'register' %}" style="color: #2d3e50; margin-left: 750px;">Create an account</a>
+                    <a href="{% url 'register' %}" style="color: #2d3e50; margin-left: 1450px;">Create an account</a>
                 </div>
             </div>
         </nav>
@@ -164,13 +164,13 @@
             <div class="container">
                 <div class="row min-vh-xl-100 min-vh-xxl-25 align-items-center justify-content-center">
                     <div class="text-center">
-                        <h1 style="margin-top: 100px; font-size: 50px; font-family: 'Manjari', sans-serif;">W E L C O M E&ensp;B A C K</h1> <!-- Increased font size -->
-                        <p style="font-size: 24px; font-family: 'Manjari', sans-serif;">Find your doctor and make an appointment.</p> <!-- Increased font size -->
+                        <h1 style="margin-top: 150px; font-size: 50px; font-family: 'Manjari', sans-serif;">W E L C O M E&ensp;B A C K</h1> 
+                        <p style="font-size: 24px; font-family: 'Manjari', sans-serif;">Find your doctor and make an appointment.</p> 
                     </div>
 
                     <div class="login-section">
                         <div class="login-options">
-                            <button class="google-button" style="margin-top: -200px;" type="button">
+                            <button class="google-button" style="margin-top: -50px;" type="button">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/IOS_Google_icon.png" alt="Google Logo" style="width: 20px;">
                                 Log in with Google
                             </button>
@@ -178,7 +178,7 @@
                         <p style="color: black; margin-left: 23px;">⸻⸻⸻⸻ or ⸻⸻⸻⸻</p>
                     </div>
 
-                    <form method="post" action="{% url 'login' %}" style="margin-top: -450px;">
+                    <form method="post" action="{% url 'login' %}" style="margin-top: -50px;">
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="Username" required>
                         <input type="password" name="password" placeholder="Password" required>
