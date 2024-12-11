@@ -294,3 +294,11 @@ def calendar_appointments(request):
         for appt in upcoming_appointments
     ]
     return JsonResponse(data, safe=False)
+
+def cancel_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.method == "GET":  
+        appointment.status = "Cancelled" 
+        appointment.save()
+        messages.success(request, "Appointment canceled successfully.")
+    return redirect('appointments:appointment_history')  
